@@ -2,8 +2,6 @@ var template = document.querySelector('template').content;
 var container = document.querySelector('#container');
 var form = document.querySelector("form");
 
-//x.querySelector('h1').innerHTML="Awesome";
-
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyBY44SW0hPuWhxjCyrGDjtA3XojYjdd5Hw",
@@ -19,11 +17,23 @@ var database = firebase.database();
 var itemsRef = database.ref('items/');
 
 itemsRef.on('child_added', showData);
+itemsRef.on('child_removed', dataRemoved);
+function dataRemoved(evt){
+    console.log(evt.key);
+    var art = container.querySelector('article[data-key='+evt.key+']');
+    art.classList.add('fadeOut');
+    art.addEventListener('transitionend', function(e){
+       art.style.display="none";
+    });
+
+}
 
 function showData(snapshot){
-    console.log(snapshot.val(), snapshot.key);
+    //console.log(snapshot.val(), snapshot.key);
 
     var x = template.cloneNode(true);
+    //console.log();
+    x.querySelector('article').dataset.key = snapshot.key;
     var price = x.querySelector('h2 span'),
         header = x.querySelector('.header'),
         description = x.querySelector('p'),
@@ -33,8 +43,16 @@ function showData(snapshot){
         header.innerHTML = snapshot.val().header;
         description.innerHTML = snapshot.val().description;
         name.innerHTML = snapshot.val().author.name;
+        x.querySelector('button').addEventListener('click', function(e){
+           console.log(e.target.parentNode.dataset.key);
+            database.ref('items/'+e.target.parentNode.dataset.key).remove();
+        });
+
     container.appendChild(x);
+    //
 }
+
+//database.ref('items/').remove()
 
 
 form.addEventListener('submit', function(evt){
