@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
+</head>
+<body>
+
+    <div id="container"></div>
+
+    <template>
+        <article>
+            <header><h1><span class="header">HEADER</span> by <span class="name">JONAS</span></h1></header>
+            <h2><span>PRICE</span>,-</h2>
+            <p>DESCRIPTION</p>
+        </article>
+
+    </template>
+
+<form>
+    <label>
+        Header
+        <input type="text" name="header">
+    </label>
+    <label>
+        Price
+        <input type="number" name="price">
+    </label>
+    <label>
+        Description
+        <textarea name="description"></textarea>
+    </label>
+    <input type="submit" value="sell stuff">
+</form>
+
+<script src="js/main.js"></script>
+</body>
+</html>

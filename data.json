@@ -1,0 +1,23 @@
+{
+  "items":
+  {
+    "someId": {
+      "header": "an old laptops",
+      "price": 200,
+      "description": "Ueah its old",
+      "author": {
+        "name":"Jonas",
+        "email": "jofh@kea.dk"
+      }
+    },
+    "anotherId": {
+      "header": "an old boot",
+      "price": 20,
+      "description": "Yeah its old",
+      "author": {
+        "name":"Ralph",
+        "email": "a@a.dk"
+      }
+    }
+  }
+}
