@@ -1,7 +1,8 @@
 var template = document.querySelector('template').content;
 var container = document.querySelector('#container');
 var form = document.querySelector("form");
-
+var formControl = document.querySelector('#formControl');
+var loggedUser;
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyBY44SW0hPuWhxjCyrGDjtA3XojYjdd5Hw",
@@ -49,14 +50,14 @@ function showData(snapshot){
         });
 
     container.appendChild(x);
-    //
 }
 
-//database.ref('items/').remove()
-
-
+formControl.addEventListener('click', function(){
+    form.classList.toggle('inView');
+});
 form.addEventListener('submit', function(evt){
     evt.preventDefault();
+
     var header = form.querySelector('input[name=header]').value;
     var description = form.querySelector('textarea').value;
     var price = parseInt(form.querySelector('input[name=price]').value);
@@ -68,14 +69,57 @@ form.addEventListener('submit', function(evt){
             "price": price,
             "description": description,
             "author": {
-                "name":"Ralph",
-                "email": "a@a.dk"
+                "name":loggedUser.displayName,
+                "email": loggedUser.email
             }
         }
-    )
+    );
+    form.classList.remove('inView');
 });
 
 
+//login stuff comes here
+var provider = new firebase.auth.GoogleAuthProvider();
+
+document.querySelector("#loginButton").addEventListener('click', logIn);
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        console.log("user is logged in");
+        document.querySelector('#loginButton').classList.add("hidden");
+        document.querySelector('#logoutButton').classList.remove("hidden");
+        formControl.classList.remove("hidden");
+
+        loggedUser=user;
+    } else {
+        // No user is signed in.
+        document.querySelector('#loginButton').classList.remove("hidden");
+        document.querySelector('#logoutButton').classList.add("hidden");
+        formControl.classList.add("hidden");
+        console.log("Not loged in");
+    }
+});
+
+function logIn(){
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        console.log(result);
+        loggedUser = result.user;
+        // ...
+    }).catch(function(error) {
+        console.log(error);
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+    });
+}
 
 
 

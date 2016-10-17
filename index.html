@@ -9,7 +9,11 @@
     <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
 </head>
 <body>
-
+    <nav>
+        <button id="loginButton" class="btn btn-success"><span class="glyphicon glyphicon-user"></span> <span class="loginText">Log in</span></button>
+        <button id="logoutButton" class="btn btn-warning"><span class="glyphicon glyphicon-user"></span> <span class="loginText">Log out</span></button>
+        <button id="formControl" class="btn btn-success glyphicon glyphicon-plus"></button>
+    </nav>
     <div id="container"></div>
 
     <template>
@@ -17,7 +21,7 @@
             <header><h1><span class="header">HEADER</span> by <span class="name">JONAS</span></h1></header>
             <h2><span>PRICE</span>,-</h2>
             <p>DESCRIPTION</p>
-            <button class="btn  btn-danger glyphicon glyphicon-trash"></button>
+            <button class="btn btn-danger glyphicon glyphicon-trash"></button>
         </article>
 
     </template>
@@ -37,6 +41,7 @@
     </label>
     <input type="submit" value="sell stuff">
 </form>
+
 
 <script src="js/main.js"></script>
 </body>
