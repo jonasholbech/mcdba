@@ -1,8 +1,9 @@
+//some global variables we need for later
 var template = document.querySelector('template').content;
 var container = document.querySelector('#container');
 var form = document.querySelector("form");
 var formControl = document.querySelector('#formControl');
-var loggedUser;
+var loggedUser; // this will contain info about the user (later)
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyBY44SW0hPuWhxjCyrGDjtA3XojYjdd5Hw",
@@ -12,28 +13,34 @@ var config = {
     messagingSenderId: "1084583363332"
 };
 firebase.initializeApp(config);
-
+//just give something shorter to write
 var database = firebase.database();
 
+//grab af reference to the items part of the JSON tree
 var itemsRef = database.ref('items/');
 
+//register two eventhandlers
 itemsRef.on('child_added', showData);
 itemsRef.on('child_removed', dataRemoved);
+
 function dataRemoved(evt){
-    console.log(evt.key);
+    //console.log(evt.key);
+    //grab the key, fade out the element, and once that done, remove it
     var art = container.querySelector('article[data-key='+evt.key+']');
     art.classList.add('fadeOut');
     art.addEventListener('transitionend', function(e){
-       art.style.display="none";
+        container.removeChild(art);
+       //art.style.display="none";
     });
 
 }
 
+//this function runs once per "row" in the database
 function showData(snapshot){
     //console.log(snapshot.val(), snapshot.key);
-
+    //clone the templates
     var x = template.cloneNode(true);
-    //console.log();
+    //use that fance data-attribute :-)
     x.querySelector('article').dataset.key = snapshot.key;
     var price = x.querySelector('h2 span'),
         header = x.querySelector('.header'),
@@ -46,15 +53,18 @@ function showData(snapshot){
         name.innerHTML = snapshot.val().author.name;
         x.querySelector('button').addEventListener('click', function(e){
            console.log(e.target.parentNode.dataset.key);
+            //this is where we delete
             database.ref('items/'+e.target.parentNode.dataset.key).remove();
         });
 
     container.appendChild(x);
 }
 
+//slide the form in and out
 formControl.addEventListener('click', function(){
     form.classList.toggle('inView');
 });
+//add new content
 form.addEventListener('submit', function(evt){
     evt.preventDefault();
 
@@ -75,13 +85,24 @@ form.addEventListener('submit', function(evt){
         }
     );
     form.classList.remove('inView');
+    //TODO clear the form elements
 });
 
 
 //login stuff comes here
+
+document.querySelector("#logoutButton").addEventListener('click', function(){
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+    }, function(error) {
+        // An error happened.
+    });
+});
 var provider = new firebase.auth.GoogleAuthProvider();
 
 document.querySelector("#loginButton").addEventListener('click', logIn);
+
+//This is a callback, so it runs once the user is logged in, and not only on startup!!!
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         // User is signed in.
@@ -100,6 +121,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
 
+//lots of stuff in here, horrible
 function logIn(){
     firebase.auth().signInWithPopup(provider).then(function(result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -117,7 +139,6 @@ function logIn(){
         var email = error.email;
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
-        // ...
     });
 }
 
